@@ -24,7 +24,7 @@
 
   - Add dependency :
   ```
-  implementation 'com.github.thepeaklab:WindyKotlin:1.0.0:'
+  implementation 'com.github.thepeaklab:WindyKotlin:1.0.0'
   ```
 
 ## Usage

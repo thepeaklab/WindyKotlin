@@ -22,7 +22,7 @@
   }
   ```
 
-  - Add dependency :
+  Add dependency :
   ```
   implementation 'com.github.thepeaklab:WindyKotlin:1.0.0'
   ```

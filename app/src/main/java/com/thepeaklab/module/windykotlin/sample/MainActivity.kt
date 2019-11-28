@@ -22,7 +22,7 @@ class MainActivity : AppCompatActivity(), WindyEventHandler {
 
     private lateinit var binding: ActivityMainBinding
     private val markerList = mutableListOf<Marker>()
-    private val initOptions = WindyInitOptions("k5yCEzyg7BlqhYmq8zKmhNuOEEPHQhPF", true, 53.528740, 8.452565, 5)
+    private val initOptions = WindyInitOptions("YOUR-WINDY-API-KEY", true, 53.528740, 8.452565, 5)
 
     @SuppressLint("SetTextI18n")
     override fun onCreate(savedInstanceState: Bundle?) {

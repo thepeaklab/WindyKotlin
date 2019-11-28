@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:context=".MainActivity">
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/btn_move"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="8dp"
+            android:layout_marginBottom="8dp"
+            android:text="Move"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            tools:ignore="HardcodedText,RtlHardcoded" />
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/btn_zoom"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="zoom"
+            app:layout_constraintStart_toEndOf="@+id/btn_move"
+            app:layout_constraintTop_toTopOf="@+id/btn_move"
+            tools:ignore="HardcodedText" />
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/btn_fit_bounds"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="fit Bounds"
+            app:layout_constraintStart_toEndOf="@+id/btn_map_center"
+            app:layout_constraintTop_toTopOf="@+id/btn_map_center"
+            tools:ignore="HardcodedText" />
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/btn_map_center"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="8dp"
+            android:text="get map center"
+            app:layout_constraintBottom_toTopOf="@+id/btn_add_marker"
+            app:layout_constraintStart_toStartOf="parent"
+            tools:ignore="HardcodedText,RtlHardcoded" />
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/btn_add_marker"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="add marker"
+            app:layout_constraintBottom_toTopOf="@+id/btn_move"
+            app:layout_constraintStart_toStartOf="@+id/btn_move"
+            tools:ignore="HardcodedText" />
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/btn_remove_marker"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="8dp"
+            android:text="Remove all marker"
+            app:layout_constraintBottom_toTopOf="@+id/btn_move"
+            app:layout_constraintStart_toEndOf="@id/btn_add_marker"
+            tools:ignore="HardcodedText,RtlHardcoded" />
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/btn_reset"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="8dp"
+            android:text="reset Map"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/btn_move"
+            tools:ignore="HardcodedText,RtlHardcoded" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/content_info"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:padding="8dp"
+            android:text=""
+            app:layout_constraintBottom_toTopOf="@+id/btn_map_center"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            tools:text="Placeholder" />
+
+
+        <com.thepeaklab.module.windykotlin.view.WindyMapView
+            android:id="@+id/windyMapView"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            app:layout_constraintBottom_toTopOf="@+id/content_info"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <!--                <FrameLayout-->
+        <!--                    android:id="@+id/windyMapView"-->
+        <!--                    android:layout_width="0dp"-->
+        <!--                    app:layout_constraintBottom_toTopOf="@+id/content_info"-->
+        <!--                    app:layout_constraintEnd_toEndOf="parent"-->
+        <!--                    app:layout_constraintStart_toStartOf="parent"-->
+        <!--                    app:layout_constraintTop_toTopOf="parent"-->
+        <!--                    android:layout_height="0dp" />-->
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

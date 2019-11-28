@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="WindyMapView">
+        <attr name="apiKey" format="string"/>
+        <attr name="lat" format="float"/>
+        <attr name="lng" format="float"/>
+        <attr name="zoom" format="integer"/>
+        <attr name="showWindyLogo" format="boolean"/>
+    </declare-styleable>
+</resources>

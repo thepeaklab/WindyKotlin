@@ -1,8 +1,6 @@
 package com.thepeaklab.module.windykotlin.core
 
 import android.content.Context
-import android.content.res.Resources
-import android.graphics.BitmapFactory
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.nhaarman.mockitokotlin2.mock
 import com.thepeaklab.module.windykotlin.core.models.Coordinate
@@ -17,19 +15,13 @@ import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
-import org.mockito.Mockito
-import org.mockito.invocation.InvocationFactory.RealMethodBehavior
-import java.lang.reflect.Method
 import java.util.UUID
 import org.mockito.Mockito.`when`
-import org.mockito.Mockito.withSettings
-import org.mockito.invocation.Invocation
 import com.bumptech.glide.load.resource.bitmap.VideoDecoder.asset
 import android.R.drawable
 import androidx.annotation.DrawableRes
 import com.nhaarman.mockitokotlin2.whenever
 import java.io.File
-
 
 /**
  * WindyMapViewViewModelTest
@@ -295,8 +287,8 @@ class WindyHTMLResourcesTest {
 
         // define test data
         val coordinates = listOf(
-            Coordinate(58.1,8.1),
-            Coordinate(58.2,8.2)
+            Coordinate(58.1, 8.1),
+            Coordinate(58.2, 8.2)
         )
         val expectedSnippet = "globalMap.fitBounds([[58.1,8.1],[58.2,8.2]]);0;"
 
@@ -326,20 +318,20 @@ class WindyHTMLResourcesTest {
         // define test data
         val marker = Marker(
             uuid = UUID.fromString("bdfb7095-5e98-4db8-adc4-3b5953e1eabd"),
-            coordinate = Coordinate(58.1,8.2),
+            coordinate = Coordinate(58.1, 8.2),
             icon = WindyIcon(
-                icon = Icon(url="http://www.mein.de/test/bild.jpg"),
-                iconSize = Point(20,20),
-                iconAnchor = Point(2,5),
-                popupAnchor = Point(20,0),
-                shadowAnchor = Point(0,0),
+                icon = Icon(url = "http://www.mein.de/test/bild.jpg"),
+                iconSize = Point(20, 20),
+                iconAnchor = Point(2, 5),
+                popupAnchor = Point(20, 0),
+                shadowAnchor = Point(0, 0),
                 shadowUrl = "http://www.mein.de/test/bild_schatten.jpg",
-                shadowSize = Point(20,20)
+                shadowSize = Point(20, 20)
             )
         )
         @Language("JSON")
         val windyIconJSON = "{\"iconUrl\":\"http://www.mein.de/test/bild.jpg\",\"iconSize\":[20,20],\"iconAnchor\":[2,5],\"popupAnchor\":[20,0],\"shadowUrl\":\"http://www.mein.de/test/bild_schatten.jpg\",\"shadowSize\":[20,20],\"shadowAnchor\":[0,0]}"
-        val expectedSnippet =  "var icon = L.icon($windyIconJSON);\n" +
+        val expectedSnippet = "var icon = L.icon($windyIconJSON);\n" +
                 "var marker = L.marker([58.1, 8.2], {icon: icon});\n" +
                 "marker.uuid = \"bdfb7095-5e98-4db8-adc4-3b5953e1eabd\";\n" +
                 "marker.addTo(globalMap);\n" +
@@ -367,25 +359,25 @@ class WindyHTMLResourcesTest {
     @Test
     fun `addMarkerJSSnippet | icon from drawable | attributes are converted correctly`() {
 
-        @DrawableRes val drawableRes : Int = android.R.drawable.ic_delete
+        @DrawableRes val drawableRes: Int = android.R.drawable.ic_delete
 
         // define test data
         val marker = Marker(
             uuid = UUID.fromString("bdfb7095-5e98-4db8-adc4-3b5953e1eabd"),
-            coordinate = Coordinate(58.1,8.2),
+            coordinate = Coordinate(58.1, 8.2),
             icon = WindyIcon(
-                icon = Icon(drawable= drawableRes),
-                iconSize = Point(20,20),
-                iconAnchor = Point(2,5),
-                popupAnchor = Point(20,0),
-                shadowAnchor = Point(0,0),
+                icon = Icon(drawable = drawableRes),
+                iconSize = Point(20, 20),
+                iconAnchor = Point(2, 5),
+                popupAnchor = Point(20, 0),
+                shadowAnchor = Point(0, 0),
                 shadowUrl = "http://www.mein.de/test/bild_schatten.jpg",
-                shadowSize = Point(20,20)
+                shadowSize = Point(20, 20)
             )
         )
         @Language("JSON")
         val windyIconJSON = "{\"iconUrl\":\"\",\"iconSize\":[20,20],\"iconAnchor\":[2,5],\"popupAnchor\":[20,0],\"shadowUrl\":\"http://www.mein.de/test/bild_schatten.jpg\",\"shadowSize\":[20,20],\"shadowAnchor\":[0,0]}"
-        val expectedSnippet =  "var icon = L.icon($windyIconJSON);\n" +
+        val expectedSnippet = "var icon = L.icon($windyIconJSON);\n" +
                 "var marker = L.marker([58.1, 8.2], {icon: icon});\n" +
                 "marker.uuid = \"bdfb7095-5e98-4db8-adc4-3b5953e1eabd\";\n" +
                 "marker.addTo(globalMap);\n" +
@@ -416,26 +408,26 @@ class WindyHTMLResourcesTest {
     @Test
     fun `addMarkerJSSnippet | icon from asset | attributes are converted correctly`() {
 
-        //register stubbing
+        // register stubbing
         `when`<Any>(null).thenReturn("hey")
 
         // define test data
         val marker = Marker(
             uuid = UUID.fromString("bdfb7095-5e98-4db8-adc4-3b5953e1eabd"),
-            coordinate = Coordinate(58.1,8.2),
+            coordinate = Coordinate(58.1, 8.2),
             icon = WindyIcon(
-                icon = Icon(asset= "testimage.gif"),
-                iconSize = Point(20,20),
-                iconAnchor = Point(2,5),
-                popupAnchor = Point(20,0),
-                shadowAnchor = Point(0,0),
+                icon = Icon(asset = "testimage.gif"),
+                iconSize = Point(20, 20),
+                iconAnchor = Point(2, 5),
+                popupAnchor = Point(20, 0),
+                shadowAnchor = Point(0, 0),
                 shadowUrl = "http://www.mein.de/test/bild_schatten.jpg",
-                shadowSize = Point(20,20)
+                shadowSize = Point(20, 20)
             )
         )
         @Language("JSON")
         val windyIconJSON = "{\"iconUrl\":\"\",\"iconSize\":[20,20],\"iconAnchor\":[2,5],\"popupAnchor\":[20,0],\"shadowUrl\":\"http://www.mein.de/test/bild_schatten.jpg\",\"shadowSize\":[20,20],\"shadowAnchor\":[0,0]}"
-        val expectedSnippet =  "var icon = L.icon($windyIconJSON);\n" +
+        val expectedSnippet = "var icon = L.icon($windyIconJSON);\n" +
                 "var marker = L.marker([58.1, 8.2], {icon: icon});\n" +
                 "marker.uuid = \"bdfb7095-5e98-4db8-adc4-3b5953e1eabd\";\n" +
                 "marker.addTo(globalMap);\n" +

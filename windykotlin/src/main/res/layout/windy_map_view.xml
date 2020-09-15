@@ -1,13 +1,46 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout>
+<layout xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <variable
+            name="viewModel"
+            type="com.thepeaklab.module.windykotlin.viewmodel.WindyMapViewViewModel" />
+    </data>
+
     <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="#982">
+        tools:ignore="SelectableText">
 
         <WebView
             android:id="@+id/windy_map"
             android:layout_width="match_parent"
             android:layout_height="match_parent" />
+
+        <TextView
+            android:id="@+id/license_right"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="end|bottom"
+            android:background="@drawable/bg_license_right"
+            android:textColorLink="@color/colorPrimaryDark"
+            tools:text="OpenStreetMap"
+            android:padding="4dp"
+            android:autoLink="web"
+            android:linksClickable="true"
+            android:visibility="@{viewModel.osmVisible}"/>
+
+        <TextView
+            android:id="@+id/license_left"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="start|bottom"
+            android:background="@drawable/bg_license_left"
+            android:textColorLink="@color/colorPrimaryDark"
+            tools:text="Source: Windy.com"
+            android:padding="4dp"
+            android:autoLink="web"
+            android:linksClickable="true"/>
     </FrameLayout>
 </layout>

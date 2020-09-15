@@ -2,6 +2,10 @@ package com.thepeaklab.module.windykotlin.view
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.os.Build
+import android.text.Html
+import android.text.SpannableString
+import android.text.Spanned
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.view.View
@@ -56,7 +60,13 @@ class WindyMapView(context: Context, attrs: AttributeSet? = null) : FrameLayout(
             LayoutInflater.from(context).inflate(R.layout.windy_map_view, this, true)
         } else {
 
-            viewModel = ViewModelProviders.of(context as AppCompatActivity, WindyMapViewViewModelFactory(this, WindyHTMLResources, options)).get(WindyMapViewViewModel::class.java)
+            viewModel = ViewModelProviders.of(
+                    context as AppCompatActivity, WindyMapViewViewModelFactory(
+                    this,
+                    WindyHTMLResources,
+                    options
+            )
+            ).get(WindyMapViewViewModel::class.java)
 
             // get option from attribute values
             if (options == null) {
@@ -70,7 +80,12 @@ class WindyMapView(context: Context, attrs: AttributeSet? = null) : FrameLayout(
             }
 
             // inflate view
-            binding = DataBindingUtil.inflate<WindyMapViewBinding>(LayoutInflater.from(context), R.layout.windy_map_view, this, false)
+            binding = DataBindingUtil.inflate<WindyMapViewBinding>(
+                    LayoutInflater.from(context),
+                    R.layout.windy_map_view,
+                    this,
+                    false
+            )
 
             // uncomment the next line for debugging
             WebView.setWebContentsDebuggingEnabled(true)
@@ -82,12 +97,16 @@ class WindyMapView(context: Context, attrs: AttributeSet? = null) : FrameLayout(
                     this.javaScriptEnabled = true
                 }
                 it.addJavascriptInterface(
-                    this, "JSBridge"
+                        this, "JSBridge"
                 )
+                it.settings.domStorageEnabled = true
             }
 
-            // add inflated view
-            binding?.let { addView(it.root) }
+            // add inflated view and set license notes
+            binding?.let {
+                addLicenseNotes()
+                addView(it.root)
+            }
 
             // wait until rendering is finished
             this.setOnRenderingCompleteListener {
@@ -191,7 +210,34 @@ class WindyMapView(context: Context, attrs: AttributeSet? = null) : FrameLayout(
 
     @JavascriptInterface
     override fun postMessage(obj: String) {
-        viewModel?.handleEvent(obj)
+        viewModel?.handleEvent(obj) // TODO created 15.09.2020: Falscher thread
+    }
+
+    private fun addLicenseNotes() {
+        binding?.let {
+
+//            termsOfUse.movementMethod = LinkMovementMethod.getInstance()
+
+            it.licenseLeft.text = fromHtml(context.getString(R.string.license_html_windy))
+            it.licenseRight.text = fromHtml(context.getString(R.string.license_html_osm))
+        }
+    }
+
+    private fun fromHtml(html: String?): Spanned {
+        return when {
+            html == null -> {
+                // return an empty spannable if the html is null
+                SpannableString("")
+            }
+            Build.VERSION.SDK_INT >= Build.VERSION_CODES.N -> {
+                // FROM_HTML_MODE_LEGACY is the behaviour that was used for versions below android N
+                // we are using this flag to give a consistent behaviour
+                Html.fromHtml(html, Html.FROM_HTML_MODE_LEGACY)
+            }
+            else -> {
+                Html.fromHtml(html)
+            }
+        }
     }
 }
 

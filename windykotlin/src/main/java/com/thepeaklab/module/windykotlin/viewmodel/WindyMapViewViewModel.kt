@@ -3,6 +3,10 @@ package com.thepeaklab.module.windykotlin.viewmodel
 import android.content.Context
 import android.content.res.TypedArray
 import android.util.Log
+import android.view.View
+import androidx.annotation.UiThread
+import androidx.databinding.Bindable
+import com.thepeaklab.module.windykotlin.BR
 import com.thepeaklab.module.windykotlin.R
 import com.thepeaklab.module.windykotlin.core.ObservableViewModel
 import com.thepeaklab.module.windykotlin.core.WindyHTMLResources
@@ -30,6 +34,7 @@ class WindyMapViewViewModel(
 ) : ObservableViewModel() {
 
     var eventHandler: WindyEventHandler? = null
+    private var zoomLevel: Int? = null
 
     /**
      * init map
@@ -143,9 +148,40 @@ class WindyMapViewViewModel(
      *
      */
     fun handleEvent(event: String) {
+
         val content = htmlResources.decodeJavaScriptObject(event, WindyEventContent::class.java)
-        content?.let {
+        content?.let { it ->
+            if (it.name == WindyEventContent.EventName.zoomend) {
+                zoomLevel = getZoom()
+                notifyPropertyChanged(BR.osmVisible)
+            }
             eventHandler?.onEvent(it)
         }
+    }
+
+    @UiThread
+    private fun getZoom(): Int? {
+
+        val javascript = """
+        globalMap.getZoom();
+        """
+        var zoom: Int? = null
+        viewContext.evaluateScript(javascript) {
+            zoom = htmlResources.decodeJavaScriptObject(it, Int::class.java)
+        }
+        return zoom
+    }
+
+    /**
+     * get visibility of osm copyright note
+     */
+    @Bindable
+    fun getOsmVisible(): Int {
+        zoomLevel?.let {
+            return if (it <= 11) {
+                View.GONE
+            } else View.VISIBLE
+        }
+        return View.GONE
     }
 }

@@ -17,7 +17,7 @@ import com.thepeaklab.module.windykotlin.core.models.WindyInitOptions
  */
 
 @Suppress("UNCHECKED_CAST")
-class WindyMapViewViewModelFactory(val viewContext: WindyMapViewContext, val htmlResoutces:WindyHTMLResources, val options: WindyInitOptions?) : ViewModelProvider.Factory {
+class WindyMapViewViewModelFactory(val viewContext: WindyMapViewContext, val htmlResoutces: WindyHTMLResources, val options: WindyInitOptions?) : ViewModelProvider.Factory {
 
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
         return WindyMapViewViewModel(viewContext, htmlResoutces, options) as T

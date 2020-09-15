@@ -3,6 +3,8 @@
    <issue id="LogConditional" severity="ignore" />
    <issue id="UnusedResources" severity="informational" />
    <issue id="ConvertToWebp" severity="ignore" />
+   <issue id="SelectableText" severity="ignore" />
+   <issue id="RtlEnabled" severity="ignore" />
 
    <!-- The following must be at the bottom of your file!
         All lint issues (not listed above) will be treated as errors. -->

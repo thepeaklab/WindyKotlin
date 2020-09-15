@@ -22,7 +22,13 @@ class MainActivity : AppCompatActivity(), WindyEventHandler {
 
     private lateinit var binding: ActivityMainBinding
     private val markerList = mutableListOf<Marker>()
-    private val initOptions = WindyInitOptions("YOUR-WINDY-API-KEY", true, 53.528740, 8.452565, 5)
+    private val initOptions = WindyInitOptions(
+            "YOUR-WINDY-API-KEY",
+            true,
+            53.528740,
+            8.452565,
+            5
+    )
 
     @SuppressLint("SetTextI18n")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -139,8 +145,17 @@ class MainActivity : AppCompatActivity(), WindyEventHandler {
             WindyEventContent.EventName.moveend,
             WindyEventContent.EventName.zoom,
             WindyEventContent.EventName.move -> text = "${event.name}"
-            WindyEventContent.EventName.markerclick -> text = "${event.name}: ${event.options?.uuid}"
+            WindyEventContent.EventName.markerclick -> text =
+                    "${event.name}: ${event.options?.uuid}"
         }
-        binding.contentInfo.text = text
+        setInfoText(text)
+    }
+
+
+    fun setInfoText(text: String) {
+
+        runOnUiThread {
+            binding.contentInfo.text = text
+        }
     }
 }

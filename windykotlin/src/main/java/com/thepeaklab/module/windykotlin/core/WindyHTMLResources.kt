@@ -55,6 +55,7 @@ object WindyHTMLResources {
                 "                    const options = JSON.parse('$optionsJSONString');\n" +
                 "                    var globalMap;\n" +
                 "                    var markers = {};\n" +
+                "\n" +
                 "                    function sendNativeMessage(name, options = {}) {\n" +
                 "                        var obj = {\n" +
                 "                            name: name,\n" +
@@ -62,10 +63,29 @@ object WindyHTMLResources {
                 "                        };\n" +
                 "                        JSBridge.postMessage(JSON.stringify(obj));\n" +
                 "                    }\n" +
+                "\n" +
                 "                    // Initialize Windy API\n" +
                 "                    windyInit(options, windyAPI => {\n" +
                 "                        const { map, broadcast } = windyAPI;\n" +
                 "                        globalMap = map;\n" +
+                "\n" +
+                "                        var streetMapPane = globalMap.createPane('streetMap');" +
+                "                        streetMapPane.style.zIndex = 'auto';\n" +
+                "                        var topLayer = L.tileLayer('https://b.tile.openstreetmap.org/{z}/{x}/{y}.png', {\n" +
+                "                            pane: 'streetMap',\n" +
+                "                            minZoom: 11,\n" +
+                "                            maxZoom: 20,\n" +
+                "                        }).addTo(map);\n" +
+                "                        topLayer.setOpacity('0');\n" +
+                "                        map.options.minZoom = 4;\n" +
+                "                        map.options.maxZoom = 18;\n" +
+                "                        map.on('zoomend', function() {\n" +
+                "                            if (map.getZoom() >= 11) {\n" +
+                "                                topLayer.setOpacity('1');\n" +
+                "                            } else {\n" +
+                "                                topLayer.setOpacity('0');\n" +
+                "                            }\n" +
+                "                        });" +
                 "\n" +
                 "                        let events = [\n" +
                 "                            'zoomstart',\n" +

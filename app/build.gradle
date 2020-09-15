@@ -63,36 +63,12 @@ dependencies {
     implementation libs.kotlin
     implementation libs.appcompat
     implementation libs.core_ktx
-    implementation libs.constraintlayout
-    implementation libs.dagger
-    implementation libs.retrofit
-    implementation libs.retrofit_converter
-    implementation libs.room
+    implementation libs.constraint_layout
     implementation libs.anko
-    implementation libs.eventbus
-    implementation libs.recyclerview
     implementation libs.material_design
     implementation libs.lifecycle_extensions
-    implementation libs.logging_interceptor
-    implementation libs.glide
-    implementation libs.glide_okhttp3
-    implementation libs.work_runtime_ktx
-    kapt libs.glide_compiler
-    kapt libs.daggerCompiler
-    kapt libs.room_compiler
 
     testImplementation libs.jUnit
-    testImplementation libs.mockito_kotlin
-    testImplementation libs.test_runner
-    testImplementation libs.core_testing
 
-    androidTestImplementation libs.test_runner
-    androidTestImplementation libs.test_rules
-    androidTestImplementation libs.espresso_core
-    androidTestImplementation libs.espresso_intents
-    androidTestImplementation libs.jUnit
-    androidTestImplementation libs.truth
-    androidTestImplementation libs.dagger
-    androidTestUtil libs.orchestrator
     implementation project(path: ':windykotlin')
 }

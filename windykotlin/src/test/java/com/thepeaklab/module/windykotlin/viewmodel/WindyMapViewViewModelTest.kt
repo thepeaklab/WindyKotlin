@@ -28,7 +28,7 @@ import java.util.UUID
 
 /**
  * WindyMapViewViewModelTest
- * Windykotlin
+ * WindyKotlin
  *
  * Created by Thomas Cirksena on 2019-11-28.
  * Copyright © 2019 the peak lab. gmbh & co. kg. All rights reserved.

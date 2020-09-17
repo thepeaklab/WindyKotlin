@@ -4,7 +4,7 @@ import android.view.View
 import androidx.databinding.BindingAdapter
 
 /**
- * Windykotlin
+ * WindyKotlin
  *
  * Created by Niels Hillemeyer on 2020-09-16.
  * Copyright © 2020 the peak lab. gmbh & co. kg. All rights reserved.

@@ -57,7 +57,7 @@ class WindyMapView(context: Context, attrs: AttributeSet? = null) : FrameLayout(
             field = value
         }
 
-    private var viewModel: WindyMapViewViewModel? = null
+    internal var viewModel: WindyMapViewViewModel? = null
     private var binding: WindyMapViewBinding? = null
     private var options: WindyInitOptions? = null
     private var eventHandler: WindyEventHandler? = null

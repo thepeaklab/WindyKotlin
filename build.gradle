@@ -41,10 +41,6 @@ allprojects {
                 test_runner                  : ("androidx.test:runner:1.1.1"),
                 test_rules                   : ("androidx.test:rules:1.1.1"),
                 mockito_kotlin               : ('com.nhaarman.mockitokotlin2:mockito-kotlin:2.1.0'),
-                espresso_core                : ("androidx.test.espresso:espresso-core:$espresso"),
-                espresso_intents             : ("androidx.test.espresso:espresso-intents:$espresso"),
-                truth                        : ("androidx.test.ext:truth:1.1.0"),
-                orchestrator                 : ("androidx.test:orchestrator:1.1.1"),
                 core_testing                 : ("android.arch.core:core-testing:1.1.1"),
 
                 // android
@@ -56,7 +52,6 @@ allprojects {
                 anko                         : ("org.jetbrains.anko:anko-common:0.10.8"),
                 material_design              : ("com.google.android.material:material:1.0.0"),
                 ktlint                       : ("com.github.shyiko:ktlint:0.30.0"),
-
         ]
     }
 }

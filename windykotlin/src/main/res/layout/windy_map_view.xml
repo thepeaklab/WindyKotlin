@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:tools="http://schemas.android.com/tools">
+<layout xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <data>
 
@@ -29,7 +30,7 @@
             android:padding="4dp"
             android:autoLink="web"
             android:linksClickable="true"
-            android:visibility="@{viewModel.osmVisible}"/>
+            app:visibility="@{viewModel.osmCopyrightVisible}"/>
 
         <TextView
             android:id="@+id/license_left"

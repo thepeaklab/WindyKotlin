@@ -2,11 +2,10 @@ package com.thepeaklab.module.windykotlin.viewmodel
 
 import android.content.Context
 import android.content.res.TypedArray
+import android.os.Handler
+import android.os.Looper
 import android.util.Log
-import android.view.View
-import androidx.annotation.UiThread
-import androidx.databinding.Bindable
-import com.thepeaklab.module.windykotlin.BR
+import androidx.databinding.ObservableBoolean
 import com.thepeaklab.module.windykotlin.R
 import com.thepeaklab.module.windykotlin.core.ObservableViewModel
 import com.thepeaklab.module.windykotlin.core.WindyHTMLResources
@@ -34,6 +33,7 @@ class WindyMapViewViewModel(
 ) : ObservableViewModel() {
 
     var eventHandler: WindyEventHandler? = null
+    val osmCopyrightVisible = ObservableBoolean(false)
     private var zoomLevel: Int? = null
 
     /**
@@ -105,6 +105,7 @@ class WindyMapViewViewModel(
      *
      */
     fun setZoom(zoomLevel: Int, options: WindyZoomPanOptions? = null) {
+        this.zoomLevel = zoomLevel
         viewContext.evaluateScript(htmlResources.setZoomJSSnippet(zoomLevel, options))
     }
 
@@ -128,7 +129,7 @@ class WindyMapViewViewModel(
     }
 
     /**
-     * dd marker to map
+     * add marker to map
      *
      */
     fun addMarker(context: Context, marker: Marker) {
@@ -152,36 +153,39 @@ class WindyMapViewViewModel(
         val content = htmlResources.decodeJavaScriptObject(event, WindyEventContent::class.java)
         content?.let { it ->
             if (it.name == WindyEventContent.EventName.zoomend) {
-                zoomLevel = getZoom()
-                notifyPropertyChanged(BR.osmVisible)
+                Handler(Looper.getMainLooper()).post {
+                    getZoom()
+                }
             }
             eventHandler?.onEvent(it)
         }
     }
 
-    @UiThread
-    private fun getZoom(): Int? {
+    private fun getZoom() {
 
         val javascript = """
         globalMap.getZoom();
         """
-        var zoom: Int? = null
         viewContext.evaluateScript(javascript) {
-            zoom = htmlResources.decodeJavaScriptObject(it, Int::class.java)
+            val result = htmlResources.decodeJavaScriptObject(it, Double::class.java)
+            result?.toInt().let {
+                zoomLevel = it
+                osmCopyrightVisible.set(zoomLevel!! > 11)
+            }
         }
-        return zoom
     }
 
     /**
-     * get visibility of osm copyright note
+     * updates the visibility of Windy logo
+     *
      */
-    @Bindable
-    fun getOsmVisible(): Int {
-        zoomLevel?.let {
-            return if (it <= 11) {
-                View.GONE
-            } else View.VISIBLE
-        }
-        return View.GONE
+    fun updateWindyLogoVisibility(value: Boolean) {
+        val addOrRemove = if (value) "remove" else "add"
+        val javascript =
+            """
+        var bodyElement = document.querySelector("body");
+        bodyElement.classList.$addOrRemove("windy-logo-invisible");
+        """
+        viewContext.evaluateScript(javascript)
     }
 }

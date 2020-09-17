@@ -1,8 +1,10 @@
 package com.thepeaklab.module.windykotlin.core
 
 import android.content.Context
+import androidx.annotation.DrawableRes
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.nhaarman.mockitokotlin2.mock
+import com.nhaarman.mockitokotlin2.whenever
 import com.thepeaklab.module.windykotlin.core.models.Coordinate
 import com.thepeaklab.module.windykotlin.core.models.Icon
 import com.thepeaklab.module.windykotlin.core.models.Marker
@@ -10,18 +12,14 @@ import com.thepeaklab.module.windykotlin.core.models.Point
 import com.thepeaklab.module.windykotlin.core.models.WindyIcon
 import com.thepeaklab.module.windykotlin.core.models.WindyInitOptions
 import com.thepeaklab.module.windykotlin.core.models.WindyZoomPanOptions
+import java.io.File
+import java.util.UUID
 import org.intellij.lang.annotations.Language
 import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
-import java.util.UUID
 import org.mockito.Mockito.`when`
-import com.bumptech.glide.load.resource.bitmap.VideoDecoder.asset
-import android.R.drawable
-import androidx.annotation.DrawableRes
-import com.nhaarman.mockitokotlin2.whenever
-import java.io.File
 
 /**
  * WindyMapViewViewModelTest

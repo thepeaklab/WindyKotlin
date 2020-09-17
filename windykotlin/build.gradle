@@ -72,4 +72,6 @@ dependencies {
     ktlint libs.ktlint
 
     testImplementation libs.jUnit
+    testImplementation libs.mockito_kotlin
+    testImplementation libs.core_testing
 }

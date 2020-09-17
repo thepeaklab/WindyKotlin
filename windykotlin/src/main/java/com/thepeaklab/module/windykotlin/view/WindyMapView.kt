@@ -6,12 +6,14 @@ import android.os.Build
 import android.text.Html
 import android.text.SpannableString
 import android.text.Spanned
+import android.text.method.LinkMovementMethod
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewTreeObserver
 import android.webkit.JavascriptInterface
 import android.webkit.WebView
+import android.webkit.WebViewClient
 import android.widget.FrameLayout
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
@@ -39,11 +41,6 @@ import java.util.UUID
 class WindyMapView(context: Context, attrs: AttributeSet? = null) : FrameLayout(context, attrs),
     WindyMapViewContext, WebAppInterface {
 
-    private var viewModel: WindyMapViewViewModel? = null
-    private var binding: WindyMapViewBinding? = null
-    private var options: WindyInitOptions? = null
-    private var eventHandler: WindyEventHandler? = null
-
     constructor(
         context: Context,
         options: WindyInitOptions,
@@ -54,6 +51,17 @@ class WindyMapView(context: Context, attrs: AttributeSet? = null) : FrameLayout(
         eventHandler?.let { viewModel?.eventHandler = it }
     }
 
+    var isWindyLogoVisible: Boolean = true
+        set(value) {
+            viewModel?.updateWindyLogoVisibility(value)
+            field = value
+        }
+
+    private var viewModel: WindyMapViewViewModel? = null
+    private var binding: WindyMapViewBinding? = null
+    private var options: WindyInitOptions? = null
+    private var eventHandler: WindyEventHandler? = null
+
     init {
 
         if (isInEditMode) {
@@ -61,11 +69,11 @@ class WindyMapView(context: Context, attrs: AttributeSet? = null) : FrameLayout(
         } else {
 
             viewModel = ViewModelProviders.of(
-                    context as AppCompatActivity, WindyMapViewViewModelFactory(
+                context as AppCompatActivity, WindyMapViewViewModelFactory(
                     this,
                     WindyHTMLResources,
                     options
-            )
+                )
             ).get(WindyMapViewViewModel::class.java)
 
             // get option from attribute values
@@ -100,10 +108,20 @@ class WindyMapView(context: Context, attrs: AttributeSet? = null) : FrameLayout(
                         this, "JSBridge"
                 )
                 it.settings.domStorageEnabled = true
+
+                // set webview client
+                it.webViewClient = object : WebViewClient(){
+                    override fun onPageFinished(view: WebView?, url: String?) {
+                        viewModel?.updateWindyLogoVisibility(isWindyLogoVisible)
+                        super.onPageFinished(view, url)
+                    }
+                }
             }
 
             // add inflated view and set license notes
             binding?.let {
+                it.viewModel = viewModel
+
                 addLicenseNotes()
                 addView(it.root)
             }
@@ -113,6 +131,7 @@ class WindyMapView(context: Context, attrs: AttributeSet? = null) : FrameLayout(
 
                 // init map
                 viewModel?.initializeMap()
+
             }
         }
     }
@@ -216,7 +235,10 @@ class WindyMapView(context: Context, attrs: AttributeSet? = null) : FrameLayout(
     private fun addLicenseNotes() {
         binding?.let {
 
-//            termsOfUse.movementMethod = LinkMovementMethod.getInstance()
+            it.licenseRight.movementMethod = LinkMovementMethod.getInstance()
+            it.licenseRight.autoLinkMask = 0
+            it.licenseLeft.autoLinkMask = 0
+            it.licenseLeft.movementMethod = LinkMovementMethod.getInstance()
 
             it.licenseLeft.text = fromHtml(context.getString(R.string.license_html_windy))
             it.licenseRight.text = fromHtml(context.getString(R.string.license_html_osm))

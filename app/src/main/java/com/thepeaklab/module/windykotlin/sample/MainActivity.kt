@@ -23,11 +23,11 @@ class MainActivity : AppCompatActivity(), WindyEventHandler {
     private lateinit var binding: ActivityMainBinding
     private val markerList = mutableListOf<Marker>()
     private val initOptions = WindyInitOptions(
-            "YOUR-WINDY-API-KEY",
-            true,
-            53.528740,
-            8.452565,
-            5
+        "YOUR-WINDY-API-KEY",
+        true,
+        53.528740,
+        8.452565,
+        5
     )
 
     @SuppressLint("SetTextI18n")
@@ -51,6 +51,9 @@ class MainActivity : AppCompatActivity(), WindyEventHandler {
 
             binding.windyMapView.panTo(Coordinate(lat, lng))
         }
+
+        // example: logo toggle
+//        binding.windyMapView.isWindyLogoVisible = true
 
         // example: set zoom
         binding.btnZoom.setOnClickListener {

@@ -52,7 +52,7 @@ class WindyMapView(context: Context, attrs: AttributeSet? = null) : FrameLayout(
     }
 
     var isWindyLogoVisible: Boolean = true
-        set(value) {
+        private set(value) {
             viewModel?.updateWindyLogoVisibility(value)
             field = value
         }
@@ -225,6 +225,14 @@ class WindyMapView(context: Context, attrs: AttributeSet? = null) : FrameLayout(
         binding?.windyMap?.evaluateJavascript(script) {
             closure?.invoke(it)
         }
+    }
+
+    /**
+     * sets visibility of windy icon
+     *
+     */
+    override fun setLogoVisibility(isVisible: Boolean) {
+        isWindyLogoVisible = isVisible
     }
 
     @JavascriptInterface

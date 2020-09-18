@@ -27,8 +27,8 @@ import java.util.UUID
  */
 
 class WindyMapViewViewModel(
-    val viewContext: WindyMapViewContext,
-    val htmlResources: WindyHTMLResources,
+    private val viewContext: WindyMapViewContext,
+    private val htmlResources: WindyHTMLResources,
     private var options: WindyInitOptions? = null
 ) : ObservableViewModel() {
 
@@ -67,15 +67,17 @@ class WindyMapViewViewModel(
         var lat: Double? = null
         var lng: Double? = null
         var zoom: Int? = null
+        var showWindyLogo: Boolean? = null
 
-        val N = attrs.indexCount
-        for (i in 0 until N) {
-            val attr = attrs.getIndex(i)
-            when (attr) {
+        val n = attrs.indexCount
+        for (i in 0 until n) {
+            when (val attr = attrs.getIndex(i)) {
                 R.styleable.WindyMapView_apiKey -> apiKey = attrs.getString(attr)
                 R.styleable.WindyMapView_lat -> lat = attrs.getFloat(attr, -1f).toDouble()
                 R.styleable.WindyMapView_lng -> lng = attrs.getFloat(attr, -1f).toDouble()
                 R.styleable.WindyMapView_zoom -> zoom = attrs.getInteger(attr, -1)
+                R.styleable.WindyMapView_showWindyLogo -> showWindyLogo =
+                    attrs.getBoolean(attr, true)
             }
         }
         attrs.recycle()
@@ -89,6 +91,10 @@ class WindyMapViewViewModel(
                     zoom = zoom
                 )
             )
+        }
+
+        showWindyLogo?.let {
+            viewContext.setLogoVisibility(it)
         }
     }
 

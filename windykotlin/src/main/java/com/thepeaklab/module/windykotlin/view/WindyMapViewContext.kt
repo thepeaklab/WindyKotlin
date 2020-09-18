@@ -12,4 +12,5 @@ interface WindyMapViewContext {
 
     fun initMap(content: String)
     fun evaluateScript(script: String, closure: ((String) -> Unit)? = null)
+    fun setLogoVisibility(isVisible: Boolean)
 }

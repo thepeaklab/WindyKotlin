@@ -52,9 +52,6 @@ class MainActivity : AppCompatActivity(), WindyEventHandler {
             binding.windyMapView.panTo(Coordinate(lat, lng))
         }
 
-        // example: logo toggle
-//        binding.windyMapView.isWindyLogoVisible = true
-
         // example: set zoom
         binding.btnZoom.setOnClickListener {
 

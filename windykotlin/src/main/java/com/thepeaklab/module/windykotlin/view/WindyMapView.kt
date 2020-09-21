@@ -60,7 +60,7 @@ class WindyMapView(context: Context, attrs: AttributeSet? = null) : FrameLayout(
     internal var viewModel: WindyMapViewViewModel? = null
     private var binding: WindyMapViewBinding? = null
     private var options: WindyInitOptions? = null
-    private var eventHandler: WindyEventHandler? = null
+    internal var eventHandler: WindyEventHandler? = null
 
     init {
 
@@ -110,9 +110,10 @@ class WindyMapView(context: Context, attrs: AttributeSet? = null) : FrameLayout(
                 it.settings.domStorageEnabled = true
 
                 // set webview client
-                it.webViewClient = object : WebViewClient(){
+                it.webViewClient = object : WebViewClient() {
                     override fun onPageFinished(view: WebView?, url: String?) {
                         viewModel?.updateWindyLogoVisibility(isWindyLogoVisible)
+                        eventHandler?.onWebViewLoadingFinished()
                         super.onPageFinished(view, url)
                     }
                 }
@@ -131,7 +132,6 @@ class WindyMapView(context: Context, attrs: AttributeSet? = null) : FrameLayout(
 
                 // init map
                 viewModel?.initializeMap()
-
             }
         }
     }
@@ -279,6 +279,7 @@ interface WebAppInterface {
 interface WindyEventHandler {
 
     fun onEvent(event: WindyEventContent)
+    fun onWebViewLoadingFinished()
 }
 
 /**

@@ -151,8 +151,12 @@ class MainActivity : AppCompatActivity(), WindyEventHandler {
         setInfoText(text)
     }
 
+    override fun onWebViewLoadingFinished() {
+        Log.d("WindyMapView", "WebView onPageFinished")
+    }
 
-    fun setInfoText(text: String) {
+
+    private fun setInfoText(text: String) {
 
         runOnUiThread {
             binding.contentInfo.text = text

@@ -109,11 +109,10 @@ class WindyMapView(context: Context, attrs: AttributeSet? = null) : FrameLayout(
                 )
                 it.settings.domStorageEnabled = true
 
-                // set webview client
+                // set webView client
                 it.webViewClient = object : WebViewClient() {
                     override fun onPageFinished(view: WebView?, url: String?) {
                         viewModel?.updateWindyLogoVisibility(isWindyLogoVisible)
-                        eventHandler?.onWebViewLoadingFinished()
                         super.onPageFinished(view, url)
                     }
                 }
@@ -279,7 +278,6 @@ interface WebAppInterface {
 interface WindyEventHandler {
 
     fun onEvent(event: WindyEventContent)
-    fun onWebViewLoadingFinished()
 }
 
 /**

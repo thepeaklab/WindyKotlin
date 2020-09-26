@@ -1,6 +1,5 @@
 package com.thepeaklab.module.windykotlin.core
 
-import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.util.Log
@@ -18,7 +17,6 @@ import java.io.InputStream
 interface FileManager {
 
     fun saveImage(
-        context: Context,
         source: ImageSource,
         filename: String,
         path: String,
@@ -35,7 +33,6 @@ class FileManagerImpl : FileManager {
      *
      */
     override fun saveImage(
-        context: Context,
         source: ImageSource,
         filename: String,
         path: String,

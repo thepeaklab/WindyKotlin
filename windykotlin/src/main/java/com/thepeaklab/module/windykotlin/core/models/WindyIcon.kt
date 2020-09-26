@@ -85,7 +85,6 @@ data class WindyIcon(
             }
 
             val absPath = FileManagerImpl().saveImage(
-                context = context,
                 source = ImageSource(stream = inputStream),
                 filename = filename, path = context.cacheDir.absolutePath + File.separator + "markers",
                 compressFormat = compressFormat,
@@ -114,7 +113,6 @@ data class WindyIcon(
             val v = BitmapFactory.decodeResource(context.resources, drawableRes)
 
             val absPath = FileManagerImpl().saveImage(
-                context = context,
                 source = ImageSource(bitmap = v),
                 filename = "${uuid}_image.png",
                 path = context.cacheDir.absolutePath + File.separator + "markers",

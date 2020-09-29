@@ -57,7 +57,7 @@ data class WindyIcon(
 
         return when {
             icon.url != null -> return icon.url
-            icon.drawable != null -> getDrawablPath(context, icon.drawable, uuid)
+            icon.drawable != null -> getDrawablePath(context, icon.drawable, uuid)
             icon.asset != null -> getAssetPath(context, icon.asset)
             else -> throw IllegalArgumentException("The Icon needs to define a image by 'url', 'drawable' or 'asset'")
         }
@@ -104,9 +104,9 @@ data class WindyIcon(
      * The path of the drawable itself cant be referenced by windykotlin so a image file based on the drawable is
      * created. That file can be referenced by a ContentProvider url.
      *
-     * @return contentprovider url or empty string
+     * @return contentprovider [Uri] or empty string
      */
-    private fun getDrawablPath(context: Context, @DrawableRes drawableRes: Int, uuid: UUID): String {
+    private fun getDrawablePath(context: Context, @DrawableRes drawableRes: Int, uuid: UUID): String {
 
         return try {
 

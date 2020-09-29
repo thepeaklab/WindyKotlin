@@ -8,10 +8,12 @@ import android.text.SpannableString
 import android.text.Spanned
 import android.text.method.LinkMovementMethod
 import android.util.AttributeSet
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewTreeObserver
 import android.webkit.JavascriptInterface
+import android.webkit.WebResourceRequest
 import android.webkit.WebView
 import android.webkit.WebViewClient
 import android.widget.FrameLayout
@@ -82,17 +84,17 @@ class WindyMapView(context: Context, attrs: AttributeSet? = null) : FrameLayout(
                 viewModel?.setOptions(a)
             }
 
-            // register eventhandler
+            // register event Handler
             eventHandler?.let {
                 viewModel?.eventHandler = it
             }
 
             // inflate view
             binding = DataBindingUtil.inflate<WindyMapViewBinding>(
-                    LayoutInflater.from(context),
-                    R.layout.windy_map_view,
-                    this,
-                    false
+                LayoutInflater.from(context),
+                R.layout.windy_map_view,
+                this,
+                false
             )
 
             // uncomment the next line for debugging
@@ -103,19 +105,23 @@ class WindyMapView(context: Context, attrs: AttributeSet? = null) : FrameLayout(
                 it.settings.apply {
                     @SuppressLint("SetJavaScriptEnabled")
                     this.javaScriptEnabled = true
+                    this.useWideViewPort = true
+                    this.loadWithOverviewMode = true
+                    this.domStorageEnabled = true
                 }
                 it.addJavascriptInterface(
-                        this, "JSBridge"
+                    this, "JSBridge"
                 )
-                it.settings.domStorageEnabled = true
+
+//                it.webViewClient = getWebViewClient()
 
                 // set webView client
-                it.webViewClient = object : WebViewClient() {
-                    override fun onPageFinished(view: WebView?, url: String?) {
-                        viewModel?.updateWindyLogoVisibility(isWindyLogoVisible)
-                        super.onPageFinished(view, url)
-                    }
-                }
+//                it.webViewClient = object : WebViewClient() {
+//                    override fun onPageFinished(view: WebView?, url: String?) {
+//                        viewModel?.updateWindyLogoVisibility(isWindyLogoVisible)
+//                        super.onPageFinished(view, url)
+//                    }
+//                }
             }
 
             // add inflated view and set license notes
@@ -140,6 +146,7 @@ class WindyMapView(context: Context, attrs: AttributeSet? = null) : FrameLayout(
      *
      */
     override fun initMap(content: String) {
+        isWindyLogoVisible = false
         binding?.windyMap?.loadDataWithBaseURL("", content, "text/html", "UTF-8", null)
     }
 
@@ -268,6 +275,93 @@ class WindyMapView(context: Context, attrs: AttributeSet? = null) : FrameLayout(
             }
         }
     }
+
+//    private fun getWebViewClient(): WebViewClient {
+//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+//            return (object : WebViewClient() {
+//
+//                override fun onPageFinished(view: WebView, loadedUrl: String) {
+//                    Log.d(javaClass.simpleName, "onPageFinished")
+//                    if (loadedUrl != "") {
+//
+//                        viewModel?.updateWindyLogoVisibility(isWindyLogoVisible)
+//                        super.onPageFinished(view, loadedUrl)
+//
+//                    }
+//                }
+//
+//
+//                /**
+//                 * should override webview client
+//                 *
+//                 */
+//                override fun shouldOverrideUrlLoading(
+//                    view: WebView?,
+//                    request: WebResourceRequest?
+//                ): Boolean {
+//
+//                    val requestedUrl = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+//                        request?.url.toString()
+//                    } else {
+//                        view?.url
+//                    }
+//
+//                    if (requestedUrl == "") {
+//                        return false
+//                    }
+//
+//                    Log.d(javaClass.simpleName, "shouldOverrideUrlLoading = $requestedUrl")
+//
+////                    whitelist.forEach { url ->
+////                        requestedUrl?.let {
+////                            if (requestedUrl.contains(url)) {
+////                                return false
+////                            }
+////                        }
+////                    }
+////                    requestedUrl?.let {
+////                        viewContext.openUrlInExternalBrowser(requestedUrl)
+////                    }
+//                    return false
+//                }
+//
+//
+//            })
+//        } else {
+//            return (object : WebViewClient() {
+//
+//                override fun onPageFinished(view: WebView?, url: String?) {
+//                    Log.d(javaClass.simpleName, "onPageFinished")
+//                    if (url != "") {
+//
+//                        viewModel?.updateWindyLogoVisibility(isWindyLogoVisible)
+//                        super.onPageFinished(view, url)
+//
+//                    }
+//                }
+//
+//                /**
+//                 * should overwrite webview client
+//                 *
+//                 */
+//                override fun shouldOverrideUrlLoading(view: WebView, url: String): Boolean {
+//
+////                    whitelist.forEach { whitelistUrl ->
+////                        if (url.startsWith(whitelistUrl)) {
+////                            return false
+////
+////                        }
+////                    }
+////
+////                    viewContext.openUrlInExternalBrowser(url)
+//                    return false
+//                }
+//
+//
+//            })
+//        }
+//    }
+
 }
 
 interface WebAppInterface {

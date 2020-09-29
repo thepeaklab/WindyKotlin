@@ -13,14 +13,14 @@ import com.thepeaklab.module.windykotlin.core.models.WindyEventContent
 import com.thepeaklab.module.windykotlin.core.models.WindyIcon
 import com.thepeaklab.module.windykotlin.core.models.WindyInitOptions
 import com.thepeaklab.module.windykotlin.core.models.WindyZoomPanOptions
-import com.thepeaklab.module.windykotlin.sample.databinding.ActivityMainBinding
+import com.thepeaklab.module.windykotlin.sample.databinding.ActivityMainOldBinding
 import com.thepeaklab.module.windykotlin.view.WindyEventHandler
 import java.util.UUID
 
 
 class MainActivity : AppCompatActivity(), WindyEventHandler {
 
-    private lateinit var binding: ActivityMainBinding
+    private lateinit var binding: ActivityMainOldBinding
     private val markerList = mutableListOf<Marker>()
     private val initOptions = WindyInitOptions(
         "YOUR-WINDY-API-KEY",
@@ -35,9 +35,9 @@ class MainActivity : AppCompatActivity(), WindyEventHandler {
         super.onCreate(savedInstanceState)
 
         // create databinding
-        binding = DataBindingUtil.setContentView(this, R.layout.activity_main)
+        binding = DataBindingUtil.setContentView(this, R.layout.activity_main_old)
 
-        // set eventhandler for events thrown by windy
+        // set event Handler for events thrown by windy
         binding.windyMapView.setEventHandler(this)
 
         // init windyMapView

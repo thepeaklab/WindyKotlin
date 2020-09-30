@@ -74,7 +74,7 @@ class WindyMapView(context: Context, attrs: AttributeSet? = null) : FrameLayout(
                     WindyHTMLResources,
                     options
                 )
-            ).get(WindyMapViewViewModel::class.java)
+            ).get(UUID.randomUUID().toString(), WindyMapViewViewModel::class.java)
 
             // get option from attribute values
             if (options == null) {

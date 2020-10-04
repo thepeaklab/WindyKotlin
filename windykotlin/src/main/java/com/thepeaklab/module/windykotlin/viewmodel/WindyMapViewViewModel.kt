@@ -35,12 +35,16 @@ class WindyMapViewViewModel(
     var eventHandler: WindyEventHandler? = null
     val osmCopyrightVisible = ObservableBoolean(false)
     private var zoomLevel: Int? = null
+    private val uuidOfMarkers= mutableListOf<UUID>()
 
     /**
      * init map
      *
      */
     fun initializeMap() {
+
+        // clear marker list on init
+        uuidOfMarkers.clear()
 
         // load data
         options?.let {
@@ -139,6 +143,7 @@ class WindyMapViewViewModel(
      *
      */
     fun addMarker(context: Context, marker: Marker) {
+        uuidOfMarkers.add(marker.uuid)
         viewContext.evaluateScript(htmlResources.addMarkerJSSnippet(context, marker))
     }
 
@@ -147,7 +152,18 @@ class WindyMapViewViewModel(
      *
      */
     fun removeMarker(uuid: UUID) {
+        uuidOfMarkers.remove(uuid)
         viewContext.evaluateScript(htmlResources.removeMarkerJSSnippet(uuid))
+    }
+
+    /**
+     * remove all marker from map
+     *
+     */
+    fun removeAllMarkers() {
+        uuidOfMarkers.forEach {
+            removeMarker(it)
+        }
     }
 
     /**

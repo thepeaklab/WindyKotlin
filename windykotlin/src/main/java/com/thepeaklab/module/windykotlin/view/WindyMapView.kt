@@ -211,10 +211,16 @@ class WindyMapView(context: Context, attrs: AttributeSet? = null) : FrameLayout(
     fun addMarker(marker: Marker) = viewModel?.addMarker(context, marker)
 
     /**
-     * remove all marker from map
+     * remove single marker from map
      *
      */
     fun removeMarker(uuid: UUID) = viewModel?.removeMarker(uuid)
+
+    /**
+     * remove all marker from map
+     *
+     */
+    fun removeAllMarkers() = viewModel?.removeAllMarkers()
 
     /**
      * evaluate javascript

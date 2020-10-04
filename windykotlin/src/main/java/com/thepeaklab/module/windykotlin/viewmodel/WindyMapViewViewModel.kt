@@ -161,7 +161,7 @@ class WindyMapViewViewModel(
      *
      */
     fun removeAllMarkers() {
-        uuidOfMarkers.forEach {
+        uuidOfMarkers.toList().forEach {
             removeMarker(it)
         }
     }

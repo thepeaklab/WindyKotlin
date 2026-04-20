@@ -77,7 +77,7 @@ data class WindyIcon(
             val filename = assetPath.substring(assetPath.lastIndexOf(File.pathSeparator) + 1)
             val inputStream = context.assets.open(assetPath)
 
-            val compressFormat = when (MimeTypeMap.getFileExtensionFromUrl(filename.toLowerCase(Locale.getDefault()))) {
+            val compressFormat = when (MimeTypeMap.getFileExtensionFromUrl(filename.lowercase(Locale.getDefault()))) {
                 "gif" -> CompressFormat.GIF
                 "webp" -> CompressFormat.WEBP
                 "jpg", "jpeg" -> CompressFormat.JPG

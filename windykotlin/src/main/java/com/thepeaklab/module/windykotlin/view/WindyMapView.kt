@@ -17,7 +17,7 @@ import android.webkit.WebViewClient
 import android.widget.FrameLayout
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
-import androidx.lifecycle.ViewModelProviders
+import androidx.lifecycle.ViewModelProvider
 import com.thepeaklab.module.windykotlin.R
 import com.thepeaklab.module.windykotlin.core.WindyHTMLResources
 import com.thepeaklab.module.windykotlin.core.models.Coordinate
@@ -68,13 +68,10 @@ class WindyMapView(context: Context, attrs: AttributeSet? = null) : FrameLayout(
             LayoutInflater.from(context).inflate(R.layout.windy_map_view, this, true)
         } else {
 
-            viewModel = ViewModelProviders.of(
-                context as AppCompatActivity, WindyMapViewViewModelFactory(
-                    this,
-                    WindyHTMLResources,
-                    options
-                )
-            ).get(UUID.randomUUID().toString(), WindyMapViewViewModel::class.java)
+            viewModel = ViewModelProvider(
+                context as AppCompatActivity,
+                WindyMapViewViewModelFactory(this, WindyHTMLResources, options)
+            )[WindyMapViewViewModel::class.java]
 
             // get option from attribute values
             if (options == null) {
@@ -89,10 +86,10 @@ class WindyMapView(context: Context, attrs: AttributeSet? = null) : FrameLayout(
 
             // inflate view
             binding = DataBindingUtil.inflate<WindyMapViewBinding>(
-                    LayoutInflater.from(context),
-                    R.layout.windy_map_view,
-                    this,
-                    false
+                LayoutInflater.from(context),
+                R.layout.windy_map_view,
+                this,
+                false
             )
 
             // uncomment the next line for debugging
@@ -105,7 +102,7 @@ class WindyMapView(context: Context, attrs: AttributeSet? = null) : FrameLayout(
                     this.javaScriptEnabled = true
                 }
                 it.addJavascriptInterface(
-                        this, "JSBridge"
+                    this, "JSBridge"
                 )
                 it.settings.domStorageEnabled = true
 

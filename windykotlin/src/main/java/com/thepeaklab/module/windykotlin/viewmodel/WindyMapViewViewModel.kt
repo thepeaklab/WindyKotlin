@@ -103,7 +103,7 @@ class WindyMapViewViewModel(
     }
 
     /**
-     * move map center to the given cooordinates
+     * move map center to the given coordinates
      *
      */
     fun panTo(coordinate: Coordinate, options: WindyZoomPanOptions? = null) {

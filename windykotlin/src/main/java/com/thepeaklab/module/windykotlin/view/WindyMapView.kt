@@ -8,16 +8,20 @@ import android.text.SpannableString
 import android.text.Spanned
 import android.text.method.LinkMovementMethod
 import android.util.AttributeSet
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewTreeObserver
+import android.webkit.CookieManager
 import android.webkit.JavascriptInterface
+import android.webkit.WebSettings
 import android.webkit.WebView
 import android.webkit.WebViewClient
 import android.widget.FrameLayout
-import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.findViewTreeLifecycleOwner
+import androidx.lifecycle.findViewTreeViewModelStoreOwner
 import com.thepeaklab.module.windykotlin.R
 import com.thepeaklab.module.windykotlin.core.WindyHTMLResources
 import com.thepeaklab.module.windykotlin.core.models.Coordinate
@@ -38,8 +42,9 @@ import java.util.UUID
  * Copyright © 2019 the peak lab. gmbh & co. kg. All rights reserved.
  */
 
-class WindyMapView(context: Context, attrs: AttributeSet? = null) : FrameLayout(context, attrs),
+class WindyMapView(context: Context, val attrs: AttributeSet? = null) : FrameLayout(context, attrs),
     WindyMapViewContext, WebAppInterface {
+
 
     constructor(
         context: Context,
@@ -48,6 +53,7 @@ class WindyMapView(context: Context, attrs: AttributeSet? = null) : FrameLayout(
     ) : this(context) {
         this.options = options
         viewModel?.setOptions(options)
+        this.eventHandler = eventHandler
         eventHandler?.let { viewModel?.eventHandler = it }
     }
 
@@ -67,23 +73,6 @@ class WindyMapView(context: Context, attrs: AttributeSet? = null) : FrameLayout(
         if (isInEditMode) {
             LayoutInflater.from(context).inflate(R.layout.windy_map_view, this, true)
         } else {
-
-            viewModel = ViewModelProvider(
-                context as AppCompatActivity,
-                WindyMapViewViewModelFactory(this, WindyHTMLResources, options)
-            )[WindyMapViewViewModel::class.java]
-
-            // get option from attribute values
-            if (options == null) {
-                val a = context.obtainStyledAttributes(attrs, R.styleable.WindyMapView)
-                viewModel?.setOptions(a)
-            }
-
-            // register eventhandler
-            eventHandler?.let {
-                viewModel?.eventHandler = it
-            }
-
             // inflate view
             binding = DataBindingUtil.inflate<WindyMapViewBinding>(
                 LayoutInflater.from(context),
@@ -92,43 +81,80 @@ class WindyMapView(context: Context, attrs: AttributeSet? = null) : FrameLayout(
                 false
             )
 
-            // uncomment the next line for debugging
-            WebView.setWebContentsDebuggingEnabled(true)
+        }
+    }
 
-            // enable javascript and add bridge interface
-            binding?.windyMap?.let {
-                it.settings.apply {
-                    @SuppressLint("SetJavaScriptEnabled")
-                    this.javaScriptEnabled = true
-                }
-                it.addJavascriptInterface(
-                    this, "JSBridge"
-                )
-                it.settings.domStorageEnabled = true
+    private var attached = false
 
-                // set webView client
-                it.webViewClient = object : WebViewClient() {
+    override fun onAttachedToWindow() {
+        super.onAttachedToWindow()
+
+        if (attached) {
+            return
+        }
+        attached = true
+
+        // work with vmstore to let Android decide what the context is
+        val viewModelStoreOwner = findViewTreeViewModelStoreOwner()
+        if (viewModelStoreOwner != null && viewModel == null) {
+
+            viewModel = ViewModelProvider(
+                viewModelStoreOwner,
+                WindyMapViewViewModelFactory(this, WindyHTMLResources, options)
+            )[WindyMapViewViewModel::class.java]
+
+            binding?.let {
+                it.lifecycleOwner = findViewTreeLifecycleOwner()
+                it.viewModel = viewModel
+                it.windyMap.webViewClient = object : WebViewClient() {
                     override fun onPageFinished(view: WebView?, url: String?) {
                         viewModel?.updateWindyLogoVisibility(isWindyLogoVisible)
                         super.onPageFinished(view, url)
                     }
                 }
             }
+        }
 
-            // add inflated view and set license notes
-            binding?.let {
-                it.viewModel = viewModel
+        // get option from attribute values
+        if (options == null) {
+            val a = context.obtainStyledAttributes(attrs, R.styleable.WindyMapView)
+            viewModel?.setOptions(a)
+        }
 
-                addLicenseNotes()
-                addView(it.root)
+        // register eventhandler
+        eventHandler?.let {
+            viewModel?.eventHandler = it
+        }
+
+
+        // enable javascript and add bridge interface
+        binding?.windyMap?.let {
+            it.settings.apply {
+                @SuppressLint("SetJavaScriptEnabled")
+                this.javaScriptEnabled = true
+                cacheMode = WebSettings.LOAD_NO_CACHE
             }
 
-            // wait until rendering is finished
-            this.setOnRenderingCompleteListener {
+            it.addJavascriptInterface(
+                this, "JSBridge"
+            )
+            CookieManager.getInstance().removeAllCookies(null)
+            it.clearCache(true)
+        }
 
-                // init map
-                viewModel?.initializeMap()
-            }
+        // add inflated view and set license notes
+        binding?.let {
+            it.viewModel = viewModel
+
+            addLicenseNotes()
+            addView(it.root)
+        }
+
+        // wait until rendering is finished
+        this.setOnRenderingCompleteListener {
+
+            // init map
+            viewModel?.initializeMap()
         }
     }
 
@@ -270,6 +296,22 @@ class WindyMapView(context: Context, attrs: AttributeSet? = null) : FrameLayout(
                 Html.fromHtml(html)
             }
         }
+    }
+
+    fun destroy() {
+        binding?.windyMap?.webViewClient = WebViewClient()
+        binding?.windyMap?.let {
+            it.stopLoading()
+            it.clearHistory()
+            it.removeAllViews()
+            it.destroy()
+        }
+
+        binding?.lifecycleOwner = null
+        binding?.unbind()
+
+        binding = null
+        viewModel = null
     }
 }
 

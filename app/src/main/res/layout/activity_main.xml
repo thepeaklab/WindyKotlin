@@ -6,6 +6,7 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:paddingBottom="40dp"
         tools:context=".MainActivity">
 
         <androidx.appcompat.widget.AppCompatButton
@@ -96,16 +97,8 @@
             app:layout_constraintBottom_toTopOf="@+id/content_info"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-
-        <!--                <FrameLayout-->
-        <!--                    android:id="@+id/windyMapView"-->
-        <!--                    android:layout_width="0dp"-->
-        <!--                    app:layout_constraintBottom_toTopOf="@+id/content_info"-->
-        <!--                    app:layout_constraintEnd_toEndOf="parent"-->
-        <!--                    app:layout_constraintStart_toStartOf="parent"-->
-        <!--                    app:layout_constraintTop_toTopOf="parent"-->
-        <!--                    android:layout_height="0dp" />-->
+            app:layout_constraintTop_toTopOf="parent"
+            app:showWindyLogo="true" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

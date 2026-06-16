@@ -18,7 +18,6 @@ import java.io.InputStream
 interface FileManager {
 
     fun saveImage(
-        context: Context,
         source: ImageSource,
         filename: String,
         path: String,
@@ -35,7 +34,6 @@ class FileManagerImpl : FileManager {
      *
      */
     override fun saveImage(
-        context: Context,
         source: ImageSource,
         filename: String,
         path: String,
@@ -52,7 +50,12 @@ class FileManagerImpl : FileManager {
         try {
 
             when {
-                source.bitmap != null -> source.bitmap.compress(compressFormat.getBitmapCompressFormat(), compressQuality, baos)
+                source.bitmap != null -> source.bitmap.compress(
+                    compressFormat.getBitmapCompressFormat(),
+                    compressQuality,
+                    baos
+                )
+
                 source.stream != null -> {
                     if (compressFormat == CompressFormat.GIF) {
                         val buffer = ByteArray(1024)
@@ -63,9 +66,14 @@ class FileManagerImpl : FileManager {
                         }
                         baos.flush()
                     } else {
-                        BitmapFactory.decodeStream(source.stream).compress(compressFormat.getBitmapCompressFormat(), compressQuality, baos)
+                        BitmapFactory.decodeStream(source.stream).compress(
+                            compressFormat.getBitmapCompressFormat(),
+                            compressQuality,
+                            baos
+                        )
                     }
                 }
+
                 else -> throw IllegalArgumentException("The ImageSource needs to define a image by 'bitmap' or 'stream'")
             }
 
@@ -97,9 +105,9 @@ data class ImageSource(val bitmap: Bitmap? = null, val stream: InputStream? = nu
 enum class CompressFormat {
     GIF, WEBP, PNG, JPG, OTHER;
 
-    fun getBitmapCompressFormat(): Bitmap.CompressFormat? {
+    fun getBitmapCompressFormat(): Bitmap.CompressFormat {
         return when (this) {
-            GIF -> null
+            GIF -> throw IllegalArgumentException("GIF can not be compressed to Bitmap. Trying this is unexpected, please stop doing this.")
             WEBP -> Bitmap.CompressFormat.WEBP
             PNG -> Bitmap.CompressFormat.PNG
             JPG -> Bitmap.CompressFormat.JPEG

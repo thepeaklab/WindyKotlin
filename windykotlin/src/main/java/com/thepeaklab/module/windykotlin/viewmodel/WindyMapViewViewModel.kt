@@ -2,7 +2,10 @@ package com.thepeaklab.module.windykotlin.viewmodel
 
 import android.content.Context
 import android.content.res.TypedArray
+import android.os.Handler
+import android.os.Looper
 import android.util.Log
+import androidx.databinding.ObservableBoolean
 import com.thepeaklab.module.windykotlin.R
 import com.thepeaklab.module.windykotlin.core.ObservableViewModel
 import com.thepeaklab.module.windykotlin.core.WindyHTMLResources
@@ -24,18 +27,24 @@ import java.util.UUID
  */
 
 class WindyMapViewViewModel(
-    val viewContext: WindyMapViewContext,
-    val htmlResources: WindyHTMLResources,
+    private val viewContext: WindyMapViewContext,
+    private val htmlResources: WindyHTMLResources,
     private var options: WindyInitOptions? = null
 ) : ObservableViewModel() {
 
     var eventHandler: WindyEventHandler? = null
+    val osmCopyrightVisible = ObservableBoolean(false)
+    private var zoomLevel: Int? = null
+    private val uuidOfMarkers= mutableListOf<UUID>()
 
     /**
      * init map
      *
      */
     fun initializeMap() {
+
+        // clear marker list on init
+        uuidOfMarkers.clear()
 
         // load data
         options?.let {
@@ -62,15 +71,17 @@ class WindyMapViewViewModel(
         var lat: Double? = null
         var lng: Double? = null
         var zoom: Int? = null
+        var showWindyLogo: Boolean? = null
 
-        val N = attrs.indexCount
-        for (i in 0 until N) {
-            val attr = attrs.getIndex(i)
-            when (attr) {
+        val n = attrs.indexCount
+        for (i in 0 until n) {
+            when (val attr = attrs.getIndex(i)) {
                 R.styleable.WindyMapView_apiKey -> apiKey = attrs.getString(attr)
                 R.styleable.WindyMapView_lat -> lat = attrs.getFloat(attr, -1f).toDouble()
                 R.styleable.WindyMapView_lng -> lng = attrs.getFloat(attr, -1f).toDouble()
                 R.styleable.WindyMapView_zoom -> zoom = attrs.getInteger(attr, -1)
+                R.styleable.WindyMapView_showWindyLogo -> showWindyLogo =
+                    attrs.getBoolean(attr, true)
             }
         }
         attrs.recycle()
@@ -85,10 +96,14 @@ class WindyMapViewViewModel(
                 )
             )
         }
+
+        showWindyLogo?.let {
+            viewContext.setLogoVisibility(it)
+        }
     }
 
     /**
-     * move map center to the given cooordinates
+     * move map center to the given coordinates
      *
      */
     fun panTo(coordinate: Coordinate, options: WindyZoomPanOptions? = null) {
@@ -100,6 +115,7 @@ class WindyMapViewViewModel(
      *
      */
     fun setZoom(zoomLevel: Int, options: WindyZoomPanOptions? = null) {
+        this.zoomLevel = zoomLevel
         viewContext.evaluateScript(htmlResources.setZoomJSSnippet(zoomLevel, options))
     }
 
@@ -123,10 +139,11 @@ class WindyMapViewViewModel(
     }
 
     /**
-     * dd marker to map
+     * add marker to map
      *
      */
     fun addMarker(context: Context, marker: Marker) {
+        uuidOfMarkers.add(marker.uuid)
         viewContext.evaluateScript(htmlResources.addMarkerJSSnippet(context, marker))
     }
 
@@ -135,7 +152,18 @@ class WindyMapViewViewModel(
      *
      */
     fun removeMarker(uuid: UUID) {
+        uuidOfMarkers.remove(uuid)
         viewContext.evaluateScript(htmlResources.removeMarkerJSSnippet(uuid))
+    }
+
+    /**
+     * remove all marker from map
+     *
+     */
+    fun removeAllMarkers() {
+        uuidOfMarkers.toList().forEach {
+            removeMarker(it)
+        }
     }
 
     /**
@@ -143,9 +171,43 @@ class WindyMapViewViewModel(
      *
      */
     fun handleEvent(event: String) {
+
         val content = htmlResources.decodeJavaScriptObject(event, WindyEventContent::class.java)
-        content?.let {
+        content?.let { it ->
+            if (it.name == WindyEventContent.EventName.zoomend) {
+                Handler(Looper.getMainLooper()).post {
+                    getZoom()
+                }
+            }
             eventHandler?.onEvent(it)
         }
+    }
+
+    private fun getZoom() {
+
+        val javascript = """
+        globalMap.getZoom();
+        """
+        viewContext.evaluateScript(javascript) {
+            val result = htmlResources.decodeJavaScriptObject(it, Double::class.java)
+            result?.toInt().let {
+                zoomLevel = it
+                osmCopyrightVisible.set(zoomLevel!! > 11)
+            }
+        }
+    }
+
+    /**
+     * updates the visibility of Windy logo
+     *
+     */
+    fun updateWindyLogoVisibility(value: Boolean) {
+        val addOrRemove = if (value) "remove" else "add"
+        val javascript =
+            """
+        var bodyElement = document.querySelector("body");
+        bodyElement.classList.$addOrRemove("windy-logo-invisible");
+        """
+        viewContext.evaluateScript(javascript)
     }
 }

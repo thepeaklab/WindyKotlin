@@ -3,8 +3,14 @@ package com.thepeaklab.module.windykotlin.sample
 import android.annotation.SuppressLint
 import android.os.Bundle
 import android.util.Log
+import com.google.android.material.snackbar.Snackbar
 import androidx.appcompat.app.AppCompatActivity
-import androidx.databinding.DataBindingUtil
+import androidx.navigation.findNavController
+import androidx.navigation.ui.AppBarConfiguration
+import androidx.navigation.ui.navigateUp
+import androidx.navigation.ui.setupActionBarWithNavController
+import android.view.Menu
+import android.view.MenuItem
 import com.thepeaklab.module.windykotlin.core.models.Coordinate
 import com.thepeaklab.module.windykotlin.core.models.Icon
 import com.thepeaklab.module.windykotlin.core.models.Marker
@@ -17,19 +23,24 @@ import com.thepeaklab.module.windykotlin.sample.databinding.ActivityMainBinding
 import com.thepeaklab.module.windykotlin.view.WindyEventHandler
 import java.util.UUID
 
-
 class MainActivity : AppCompatActivity(), WindyEventHandler {
 
     private lateinit var binding: ActivityMainBinding
     private val markerList = mutableListOf<Marker>()
-    private val initOptions = WindyInitOptions("YOUR-WINDY-API-KEY", true, 53.528740, 8.452565, 5)
+    private val initOptions = WindyInitOptions(
+        "<INSERT_YOUR_API_KEY>",
+        true,
+        53.528740,
+        8.452565,
+        5
+    )
 
     @SuppressLint("SetTextI18n")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        // create databinding
-        binding = DataBindingUtil.setContentView(this, R.layout.activity_main)
+        binding = ActivityMainBinding.inflate(layoutInflater)
+        setContentView(binding.root)
 
         // set eventhandler for events thrown by windy
         binding.windyMapView.setEventHandler(this)
@@ -122,6 +133,22 @@ class MainActivity : AppCompatActivity(), WindyEventHandler {
         }
     }
 
+    override fun onCreateOptionsMenu(menu: Menu): Boolean {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        menuInflater.inflate(R.menu.menu_main, menu)
+        return true
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        // Handle action bar item clicks here. The action bar will
+        // automatically handle clicks on the Home/Up button, so long
+        // as you specify a parent activity in AndroidManifest.xml.
+        return when (item.itemId) {
+            R.id.action_settings -> true
+            else -> super.onOptionsItemSelected(item)
+        }
+    }
+
     /**
      * handle windy events
      *
@@ -139,8 +166,19 @@ class MainActivity : AppCompatActivity(), WindyEventHandler {
             WindyEventContent.EventName.moveend,
             WindyEventContent.EventName.zoom,
             WindyEventContent.EventName.move -> text = "${event.name}"
-            WindyEventContent.EventName.markerclick -> text = "${event.name}: ${event.options?.uuid}"
+
+            WindyEventContent.EventName.markerclick -> text =
+                "${event.name}: ${event.options?.uuid}"
+
+            null -> Log.d("WindyMapView", "--> onEvent error eventname null on: \n$event")
         }
-        binding.contentInfo.text = text
+        setInfoText(text)
+    }
+
+    private fun setInfoText(text: String) {
+
+        runOnUiThread {
+            binding.contentInfo.text = text
+        }
     }
 }

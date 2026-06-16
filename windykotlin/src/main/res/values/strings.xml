@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">WindyKotlin</string>
+    <string name="license_html_windy">Source: &lt;a href=https://www.windy.com>Windy.com&lt;/a></string>
+    <string name="license_html_osm">© &lt;a href=https://www.openstreetmap.org/copyright>OpenStreetMap&lt;/a> Contributors</string>
 </resources>
